@@ -8,27 +8,40 @@
         :root { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --border: #30363d; }
         body { background-color: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; padding: 20px; line-height: 1.6; }
         .container { max-width: 600px; margin: auto; background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { color: var(--accent); margin-bottom: 5px; }
+        h2 { color: var(--accent); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
         p.subtitle { font-size: 0.8em; color: #8b949e; margin-bottom: 25px; }
-        label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.9em; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 8px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; box-sizing: border-box; }
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.85em; color: #8b949e; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 8px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        input:focus { border-color: var(--accent); outline: none; }
         .role-group { display: none; margin-top: 15px; padding: 15px; background: rgba(88, 166, 255, 0.05); border-radius: 8px; border-left: 4px solid var(--accent); }
-        .checkbox-item { margin: 10px 0; display: flex; align-items: center; }
-        .checkbox-item input { width: auto; margin-right: 10px; margin-top: 0; }
-        button { width: 100%; padding: 15px; margin-top: 30px; background: var(--accent); border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #79c0ff; }
+        .checkbox-item { margin: 10px 0; display: flex; align-items: center; font-size: 0.9em; }
+        .checkbox-item input { width: auto; margin-right: 12px; margin-top: 0; transform: scale(1.2); }
+        button { width: 100%; padding: 15px; margin-top: 30px; background: var(--accent); border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 1em; }
+        button:hover { background: #79c0ff; transform: translateY(-2px); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>THYMOS NEURO</h2>
-    <p class="subtitle">OPERATIVE DIAGNOSTIC v2.1 | PHX DIVISION</p>
+    <p class="subtitle">OPERATIVE DIAGNOSTIC v2.2 | INTAKE PORTAL</p>
 
     <form action="https://formspree.io/f/mqeyowba" method="POST" enctype="multipart/form-data">
         
         <label>Full Legal Designation</label>
-        <input type="text" name="name" placeholder="Name" required>
+        <input type="text" name="name" placeholder="First & Last Name" required>
+
+        <div class="grid">
+            <div>
+                <label>Discord Username</label>
+                <input type="text" name="discord" placeholder="username#0000" required>
+            </div>
+            <div>
+                <label>Phone Number</label>
+                <input type="tel" name="phone" placeholder="(602) 555-0123" required>
+            </div>
+        </div>
 
         <label>School / Institution</label>
         <input type="text" name="school" placeholder="e.g. BASIS Phoenix" required>
@@ -50,6 +63,7 @@
             <div class="checkbox-item"><input type="checkbox" name="role[]" value="Co-Executive"> Co-Executive</div>
             <div class="checkbox-item"><input type="checkbox" name="role[]" value="CTO"> CTO</div>
             <div class="checkbox-item"><input type="checkbox" name="role[]" value="CHRO"> CHRO</div>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="CFO"> CFO</div>
         </div>
 
         <div id="tech-group" class="role-group">
@@ -66,9 +80,16 @@
             <div class="checkbox-item"><input type="checkbox" name="role[]" value="Media Head"> Media Head</div>
         </div>
 
-        <label>Portfolio / Proof of Work (Link or File)</label>
-        <input type="text" name="portfolio_link" placeholder="Drive/GitHub Link">
-        <input type="file" name="attachment" style="margin-top:10px;">
+        <div id="ops-group" class="role-group">
+            <label>Operations Focus:</label>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="HR Director"> HR Director</div>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="Talent Scout"> Talent Scout</div>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="Copywriter"> Copywriter/Editor</div>
+        </div>
+
+        <label>Portfolio / Evidence (Link or File)</label>
+        <input type="text" name="portfolio_link" placeholder="Google Drive or GitHub Link">
+        <input type="file" name="attachment" style="margin-top:10px; border:none; padding:0;">
 
         <label>Strategic Vision</label>
         <textarea name="vision" rows="4" placeholder="Briefly describe your goals for Thymos Neuro..."></textarea>
@@ -79,9 +100,7 @@
 
 <script>
     function updateRoles() {
-        // Hide all
         document.querySelectorAll('.role-group').forEach(el => el.style.display = 'none');
-        // Show selection
         const val = document.getElementById('division').value;
         if(val) {
             const target = document.getElementById(val + '-group');
