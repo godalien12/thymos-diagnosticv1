@@ -1,108 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>THYMOS NEURO | Operative Diagnostic v2.0</title>
+    <title>THYMOS NEURO | Operative Diagnostic</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://unpkg.com/survey-core/survey.core.min.js"></script>
-    <script src="https://unpkg.com/survey-js-ui/survey-js-ui.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/survey-core/defaultV2.min.css">
     <style>
-        body { background-color: #0d1117; margin: 0; padding: 20px; font-family: -apple-system, sans-serif; color: #c9d1d9; }
-        #surveyContainer { max-width: 1000px; margin: 20px auto; border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,0.7); overflow: hidden; }
-        .sd-root-modern { --sd-primary: #58a6ff; --sd-background: #161b22; --sd-text: #c9d1d9; }
+        :root { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --border: #30363d; }
+        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; padding: 20px; line-height: 1.6; }
+        .container { max-width: 600px; margin: auto; background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { color: var(--accent); margin-bottom: 5px; }
+        p.subtitle { font-size: 0.8em; color: #8b949e; margin-bottom: 25px; }
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.9em; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 8px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; box-sizing: border-box; }
+        .role-group { display: none; margin-top: 15px; padding: 15px; background: rgba(88, 166, 255, 0.05); border-radius: 8px; border-left: 4px solid var(--accent); }
+        .checkbox-item { margin: 10px 0; display: flex; align-items: center; }
+        .checkbox-item input { width: auto; margin-right: 10px; margin-top: 0; }
+        button { width: 100%; padding: 15px; margin-top: 30px; background: var(--accent); border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #79c0ff; }
     </style>
 </head>
 <body>
-    <div id="surveyContainer"></div>
-    <script>
-        // REPLACE THIS WITH YOUR FORMSPREE ID
-        const FORMSPREE_URL = "https://formspree.io/f/mqeyowba"; 
 
-        const surveyJSON = {
-            "title": "THYMOS NEURO: OPERATIVE DIAGNOSTIC v2.0",
-            "description": "Strategic Intake & Division Mapping | Headquarters: Phoenix, AZ",
-            "pages": [
-                {
-                    "name": "bio",
-                    "title": "Operative Bio-Data",
-                    "elements": [
-                        { "type": "text", "name": "name", "title": "Full Legal Designation", "isRequired": true },
-                        { "type": "text", "name": "email", "title": "Direct Contact (Email)", "isRequired": true, "inputType": "email" },
-                        { "type": "text", "name": "school", "title": "Educational Institution (Current School)", "isRequired": true, "placeholder": "e.g., BASIS Phoenix" },
-                        { "type": "text", "name": "location", "title": "Current Location (City/State)", "isRequired": true, "placeholder": "e.g., Phoenix, AZ" },
-                        { 
-                            "type": "dropdown", "name": "grade", "title": "Academic Standing", 
-                            "choices": ["8th Grade", "Freshman", "Sophomore", "Junior", "Senior", "University Undergraduate"] 
-                        }
-                    ]
-                },
-                {
-                    "name": "utility",
-                    "title": "Division Allocation",
-                    "elements": [
-                        {
-                            "type": "radiogroup", "name": "division", "title": "Select your Primary Utility Division:", "isRequired": true,
-                            "choices": [
-                                { "value": "exec", "text": "Executive Directorate" },
-                                { "value": "tech", "text": "Technology & Systems" },
-                                { "value": "outreach", "text": "Outreach & Global Envoys" },
-                                { "value": "ops", "text": "HR & Internal Operations" },
-                                { "value": "finance", "text": "Financial Logistics" }
-                            ]
-                        },
-                        {
-                            "type": "checkbox", "name": "exec_roles", "title": "Executive Focus:", "visibleIf": "{division} == 'exec'",
-                            "choices": ["Co-Executive", "Chief Technology Officer", "Chief HR Officer", "Chief Financial Officer", "Chief Outreach Officer"]
-                        },
-                        {
-                            "type": "checkbox", "name": "tech_roles", "title": "Technical Focus:", "visibleIf": "{division} == 'tech'",
-                            "choices": ["Director of Systems", "Automation Lead / Bot Architect", "Full-Stack Developer", "Security Auditor", "UI/UX & Graphic Designer"]
-                        },
-                        {
-                            "type": "checkbox", "name": "outreach_roles", "title": "Outreach Focus:", "visibleIf": "{division} == 'outreach'",
-                            "choices": ["Director of Outreach", "Partnership Coordinator", "Public Media Head", "Community Ambassador"]
-                        },
-                        {
-                            "type": "checkbox", "name": "ops_roles", "title": "Operations Focus:", "visibleIf": "{division} == 'ops'",
-                            "choices": ["Director of HR", "Onboarding Lead / Trainer", "Talent Scout", "Ethics & Compliance Reviewer", "Copywriter"]
-                        }
-                    ]
-                },
-                {
-                    "name": "proof",
-                    "title": "Utility Verification",
-                    "elements": [
-                        { 
-                            "type": "comment", "name": "experience", "title": "Relevant Assets", 
-                            "description": "Describe your specific skills or previous work in this field." 
-                        },
-                        { 
-                            "type": "file", "name": "portfolio", "title": "Portfolio/Evidence Upload", 
-                            "visibleIf": "{division} == 'exec' or {tech_roles} contains 'Director' or {outreach_roles} contains 'Director'",
-                            "storeDataAsText": true, "isRequired": true, "maxSize": 2097152 
-                        },
-                        { 
-                            "type": "text", "name": "discord", "title": "Discord ID (For Unit Comms)", "isRequired": true, "placeholder": "user#0000" }
-                    ]
-                }
-            ],
-            "completedHtml": "<h3>Data Logged.</h3><p>Your diagnostic has been transmitted to the Vault at thymosneuro@gmail.com. Stand by for contact.</p>"
-        };
+<div class="container">
+    <h2>THYMOS NEURO</h2>
+    <p class="subtitle">OPERATIVE DIAGNOSTIC v2.1 | PHX DIVISION</p>
 
-        const survey = new Survey.Model(surveyJSON);
-        survey.applyTheme({ "themeName": "default", "colorPalette": "dark" });
+    <form action="https://formspree.io/f/mqeyowba" method="POST" enctype="multipart/form-data">
         
-        survey.onComplete.add((sender) => {
-            fetch(FORMSPREE_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                body: JSON.stringify(sender.data)
-            })
-            .then(res => { if (res.ok) alert("Diagnostic Complete. Data Transmitted."); });
-        });
+        <label>Full Legal Designation</label>
+        <input type="text" name="name" placeholder="Name" required>
 
-        survey.render("surveyContainer");
-    </script>
+        <label>School / Institution</label>
+        <input type="text" name="school" placeholder="e.g. BASIS Phoenix" required>
+
+        <label>Contact Email</label>
+        <input type="email" name="email" placeholder="email@example.com" required>
+
+        <label>Primary Division Allocation</label>
+        <select name="division" id="division" onchange="updateRoles()" required>
+            <option value="">-- Select Division --</option>
+            <option value="exec">Executive Directorate</option>
+            <option value="tech">Technology & Systems</option>
+            <option value="outreach">Outreach & Global Envoys</option>
+            <option value="ops">HR & Internal Operations</option>
+        </select>
+
+        <div id="exec-group" class="role-group">
+            <label>Executive Focus:</label>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="Co-Executive"> Co-Executive</div>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="CTO"> CTO</div>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="CHRO"> CHRO</div>
+        </div>
+
+        <div id="tech-group" class="role-group">
+            <label>Technical Focus:</label>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="Systems Director"> Systems Director</div>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="Web Dev"> Web/Product Dev</div>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="Automation Lead"> Automation Lead</div>
+        </div>
+
+        <div id="outreach-group" class="role-group">
+            <label>Outreach Focus:</label>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="Outreach Director"> Outreach Director</div>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="Ambassador"> Community Ambassador</div>
+            <div class="checkbox-item"><input type="checkbox" name="role[]" value="Media Head"> Media Head</div>
+        </div>
+
+        <label>Portfolio / Proof of Work (Link or File)</label>
+        <input type="text" name="portfolio_link" placeholder="Drive/GitHub Link">
+        <input type="file" name="attachment" style="margin-top:10px;">
+
+        <label>Strategic Vision</label>
+        <textarea name="vision" rows="4" placeholder="Briefly describe your goals for Thymos Neuro..."></textarea>
+
+        <button type="submit">TRANSMIT TO VAULT</button>
+    </form>
+</div>
+
+<script>
+    function updateRoles() {
+        // Hide all
+        document.querySelectorAll('.role-group').forEach(el => el.style.display = 'none');
+        // Show selection
+        const val = document.getElementById('division').value;
+        if(val) {
+            const target = document.getElementById(val + '-group');
+            if(target) target.style.display = 'block';
+        }
+    }
+</script>
+
 </body>
 </html>
