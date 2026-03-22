@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>THYMOS NEURO | Operative Diagnostic v2.0</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/survey-core/survey.core.min.js"></script>
+    <script src="https://unpkg.com/survey-js-ui/survey-js-ui.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/survey-core/defaultV2.min.css">
+    <style>
+        body { background-color: #0d1117; margin: 0; padding: 20px; font-family: -apple-system, sans-serif; color: #c9d1d9; }
+        #surveyContainer { max-width: 1000px; margin: 20px auto; border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,0.7); overflow: hidden; }
+        .sd-root-modern { --sd-primary: #58a6ff; --sd-background: #161b22; --sd-text: #c9d1d9; }
+    </style>
+</head>
+<body>
+    <div id="surveyContainer"></div>
+    <script>
+        // REPLACE THIS WITH YOUR FORMSPREE ID
+        const FORMSPREE_URL = "https://formspree.io/f/mqeyowba"; 
+
+        const surveyJSON = {
+            "title": "THYMOS NEURO: OPERATIVE DIAGNOSTIC v2.0",
+            "description": "Strategic Intake & Division Mapping | Headquarters: Phoenix, AZ",
+            "pages": [
+                {
+                    "name": "bio",
+                    "title": "Operative Bio-Data",
+                    "elements": [
+                        { "type": "text", "name": "name", "title": "Full Legal Designation", "isRequired": true },
+                        { "type": "text", "name": "email", "title": "Direct Contact (Email)", "isRequired": true, "inputType": "email" },
+                        { "type": "text", "name": "school", "title": "Educational Institution (Current School)", "isRequired": true, "placeholder": "e.g., BASIS Phoenix" },
+                        { "type": "text", "name": "location", "title": "Current Location (City/State)", "isRequired": true, "placeholder": "e.g., Phoenix, AZ" },
+                        { 
+                            "type": "dropdown", "name": "grade", "title": "Academic Standing", 
+                            "choices": ["8th Grade", "Freshman", "Sophomore", "Junior", "Senior", "University Undergraduate"] 
+                        }
+                    ]
+                },
+                {
+                    "name": "utility",
+                    "title": "Division Allocation",
+                    "elements": [
+                        {
+                            "type": "radiogroup", "name": "division", "title": "Select your Primary Utility Division:", "isRequired": true,
+                            "choices": [
+                                { "value": "exec", "text": "Executive Directorate" },
+                                { "value": "tech", "text": "Technology & Systems" },
+                                { "value": "outreach", "text": "Outreach & Global Envoys" },
+                                { "value": "ops", "text": "HR & Internal Operations" },
+                                { "value": "finance", "text": "Financial Logistics" }
+                            ]
+                        },
+                        {
+                            "type": "checkbox", "name": "exec_roles", "title": "Executive Focus:", "visibleIf": "{division} == 'exec'",
+                            "choices": ["Co-Executive", "Chief Technology Officer", "Chief HR Officer", "Chief Financial Officer", "Chief Outreach Officer"]
+                        },
+                        {
+                            "type": "checkbox", "name": "tech_roles", "title": "Technical Focus:", "visibleIf": "{division} == 'tech'",
+                            "choices": ["Director of Systems", "Automation Lead / Bot Architect", "Full-Stack Developer", "Security Auditor", "UI/UX & Graphic Designer"]
+                        },
+                        {
+                            "type": "checkbox", "name": "outreach_roles", "title": "Outreach Focus:", "visibleIf": "{division} == 'outreach'",
+                            "choices": ["Director of Outreach", "Partnership Coordinator", "Public Media Head", "Community Ambassador"]
+                        },
+                        {
+                            "type": "checkbox", "name": "ops_roles", "title": "Operations Focus:", "visibleIf": "{division} == 'ops'",
+                            "choices": ["Director of HR", "Onboarding Lead / Trainer", "Talent Scout", "Ethics & Compliance Reviewer", "Copywriter"]
+                        }
+                    ]
+                },
+                {
+                    "name": "proof",
+                    "title": "Utility Verification",
+                    "elements": [
+                        { 
+                            "type": "comment", "name": "experience", "title": "Relevant Assets", 
+                            "description": "Describe your specific skills or previous work in this field." 
+                        },
+                        { 
+                            "type": "file", "name": "portfolio", "title": "Portfolio/Evidence Upload", 
+                            "visibleIf": "{division} == 'exec' or {tech_roles} contains 'Director' or {outreach_roles} contains 'Director'",
+                            "storeDataAsText": true, "isRequired": true, "maxSize": 2097152 
+                        },
+                        { 
+                            "type": "text", "name": "discord", "title": "Discord ID (For Unit Comms)", "isRequired": true, "placeholder": "user#0000" }
+                    ]
+                }
+            ],
+            "completedHtml": "<h3>Data Logged.</h3><p>Your diagnostic has been transmitted to the Vault at thymosneuro@gmail.com. Stand by for contact.</p>"
+        };
+
+        const survey = new Survey.Model(surveyJSON);
+        survey.applyTheme({ "themeName": "default", "colorPalette": "dark" });
+        
+        survey.onComplete.add((sender) => {
+            fetch(FORMSPREE_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                body: JSON.stringify(sender.data)
+            })
+            .then(res => { if (res.ok) alert("Diagnostic Complete. Data Transmitted."); });
+        });
+
+        survey.render("surveyContainer");
+    </script>
+</body>
+</html>
